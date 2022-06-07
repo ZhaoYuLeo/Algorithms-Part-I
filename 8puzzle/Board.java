@@ -5,7 +5,6 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
     private final int[] board;
@@ -14,6 +13,7 @@ public class Board {
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
     public Board(int[][] tiles) {
+
         int[] arrage = { 2, 128 };
         if (tiles.length > arrage[1] || tiles.length < arrage[0]) {
             throw new IllegalArgumentException("The size of array is between 2 and 128.");
@@ -36,20 +36,8 @@ public class Board {
         }
     }
 
-    // string representation of this board
-    public String toString() {
-        StringBuilder boardStringBuf = new StringBuilder();
-        boardStringBuf.append(boardSize + "\n");
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
-                boardStringBuf.append(" ");
-                boardStringBuf.append(board[i * boardSize + j]);
-            }
-            boardStringBuf.append("\n");
-        }
-        String boardString = boardStringBuf.toString();
-        return boardString;
-    }
+    // // string representation of this board
+    // public String toString()
 
     // // board dimension n
     // public int dimension()
@@ -82,8 +70,5 @@ public class Board {
             for (int j = 0; j < n; j++)
                 tiles[i][j] = in.readInt();
         Board initial = new Board(tiles);
-
-        // print board to standard output
-        StdOut.println(initial.toString());
     }
 }
