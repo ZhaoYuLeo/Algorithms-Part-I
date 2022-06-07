@@ -9,6 +9,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Board {
     private final int[] board;
+    private final int dimension;
     private final int boardSize;
 
     // create a board from an n-by-n array of tiles,
@@ -18,12 +19,13 @@ public class Board {
         if (tiles.length > arrage[1] || tiles.length < arrage[0]) {
             throw new IllegalArgumentException("The size of array is between 2 and 128.");
         }
-        boardSize = tiles.length;
-        board = new int[boardSize * boardSize];
-        int maxBorder = boardSize * boardSize - 1;
+        dimension = tiles.length;
+        boardSize = dimension * dimension;
+        board = new int[boardSize];
+        int maxBorder = boardSize - 1;
         int minBorder = 0;
         for (int i = 0; i < tiles.length; i++) {
-            if (tiles[i].length != boardSize) {
+            if (tiles[i].length != dimension) {
                 throw new IllegalArgumentException("Please enter an n-by-n array.");
             }
             for (int j = 0; j < tiles[i].length; j++) {
@@ -31,7 +33,7 @@ public class Board {
                     throw new IllegalArgumentException(
                             "Please enter an array containing integers between 0 and n^2 - 1.");
                 }
-                board[(i * boardSize) + j] = tiles[i][j];
+                board[(i * dimension) + j] = tiles[i][j];
             }
         }
     }
@@ -39,11 +41,11 @@ public class Board {
     // string representation of this board
     public String toString() {
         StringBuilder boardStringBuf = new StringBuilder();
-        boardStringBuf.append(boardSize + "\n");
-        for (int i = 0; i < boardSize; i++) {
-            for (int j = 0; j < boardSize; j++) {
+        boardStringBuf.append(dimension + "\n");
+        for (int i = 0; i < dimension; i++) {
+            for (int j = 0; j < dimension; j++) {
                 boardStringBuf.append(" ");
-                boardStringBuf.append(board[i * boardSize + j]);
+                boardStringBuf.append(board[i * dimension + j]);
             }
             boardStringBuf.append("\n");
         }
@@ -53,11 +55,19 @@ public class Board {
 
     // board dimension n
     public int dimension() {
-        return boardSize;
+        return dimension;
     }
 
-    // // number of tiles out of place
-    // public int hamming()
+    // number of tiles out of place
+    public int hamming() {
+        int hammingDis = 0;
+        for (int i = 0; i < boardSize; i++) {
+            if (board[i] != 0 && (board[i] != (i + 1))) {
+                hammingDis++;
+            }
+        }
+        return hammingDis;
+    }
 
     // // sum of Manhattan distances between tiles and goal
     // public int manhattan()
@@ -87,5 +97,9 @@ public class Board {
 
         // print board to standard output
         StdOut.println(initial.toString());
+
+        // print hamming distance to standard output
+        StdOut.println(
+                "Hamming distance: " + initial.hamming());
     }
 }
