@@ -87,8 +87,13 @@ public class Board {
         return hamming() == 0;
     }
 
-    // // does this board equal y?
-    // public boolean equals(Object y)
+    // does this board equal y?
+    public boolean equals(Object y) {
+        if (y == null || getClass() != y.getClass()) {
+            return false;
+        }
+        return this.toString().equals(y.toString());
+    }
 
     // // all neighboring boards
     // public Iterable<Board> neighbors()
@@ -120,5 +125,10 @@ public class Board {
 
         // print whether the board is the goal board to standard output
         StdOut.println("Board has reached goal: " + initial.isGoal());
+
+        // compare two boards for equality and print the result to standard output
+        tiles[0][n - 1] = n * n - 1;
+        Board board2 = new Board(tiles);
+        StdOut.println("Same Board with \n" + board2.toString() + "\n" + initial.equals(board2));
     }
 }
