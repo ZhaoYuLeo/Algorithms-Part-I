@@ -69,8 +69,18 @@ public class Board {
         return hammingDis;
     }
 
-    // // sum of Manhattan distances between tiles and goal
-    // public int manhattan()
+    // sum of Manhattan distances between tiles and goal
+    public int manhattan() {
+        int manhattanDis = 0;
+        for (int i = 0; i < boardSize; ++i) {
+            int convert = (board[i] != 0) ? Math.abs(board[i] - 1) : board[i];
+            // manhattan distance is the sum of the vertical and horizontal
+            // distance from the tiles to their goal position.
+            manhattanDis += Math.abs(convert / dimension - i / dimension)
+                    + Math.abs(convert % dimension - i % dimension);
+        }
+        return manhattanDis;
+    }
 
     // // is this board the goal board?
     // public boolean isGoal()
@@ -101,5 +111,9 @@ public class Board {
         // print hamming distance to standard output
         StdOut.println(
                 "Hamming distance: " + initial.hamming());
+
+        // print Manhattan distance to standard output
+        StdOut.println(
+                "Manhattan distance: " + initial.manhattan());
     }
 }
