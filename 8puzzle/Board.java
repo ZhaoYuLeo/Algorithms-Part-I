@@ -82,8 +82,10 @@ public class Board {
         return manhattanDis;
     }
 
-    // // is this board the goal board?
-    // public boolean isGoal()
+    // is this board the goal board?
+    public boolean isGoal() {
+        return hamming() == 0;
+    }
 
     // // does this board equal y?
     // public boolean equals(Object y)
@@ -115,5 +117,8 @@ public class Board {
         // print Manhattan distance to standard output
         StdOut.println(
                 "Manhattan distance: " + initial.manhattan());
+
+        // print whether the board is the goal board to standard output
+        StdOut.println("Board has reached goal: " + initial.isGoal());
     }
 }
