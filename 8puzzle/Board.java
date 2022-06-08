@@ -5,7 +5,10 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
+
+import java.util.Arrays;
 
 public class Board {
     private final int[] board;
@@ -15,6 +18,9 @@ public class Board {
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
     public Board(int[][] tiles) {
+        if (tiles == null) {
+            throw new IllegalArgumentException("Please enter a n-by-n array.");
+        }
         int[] arrage = { 2, 128 };
         if (tiles.length > arrage[1] || tiles.length < arrage[0]) {
             throw new IllegalArgumentException("The size of array is between 2 and 128.");
@@ -36,6 +42,16 @@ public class Board {
                 board[(i * dimension) + j] = tiles[i][j];
             }
         }
+    }
+
+    // create a board from board,
+    private Board(int[] board) {
+        if (board == null) {
+            throw new IllegalArgumentException("Please enter a array with n^2 integers.");
+        }
+        this.board = Arrays.copyOf(board, board.length);
+        this.dimension = (int) Math.sqrt(board.length);
+        this.boardSize = board.length;
     }
 
     // string representation of this board
@@ -95,9 +111,43 @@ public class Board {
         return this.toString().equals(y.toString());
     }
 
-    // // all neighboring boards
-    // public Iterable<Board> neighbors()
+    // all neighboring boards
+    public Iterable<Board> neighbors() {
+        Queue<Board> neighbors = new Queue<>();
+        // find zero point
+        for (int i = 0; i < boardSize; i++) {
+            if (board[i] == 0) {
+                // whether board moving needed in four different direction
+                if (i - dimension > 0) {
+                    Board boardUp = new Board(board);
+                    boardUp.exch(i, i - dimension);
+                    neighbors.enqueue(boardUp);
+                }
+                if (i + 1 < dimension) {
+                    Board boardRight = new Board(board);
+                    boardRight.exch(i, i + 1);
+                    neighbors.enqueue(boardRight);
+                }
+                if (i + dimension < boardSize) {
+                    Board boardDown = new Board(board);
+                    boardDown.exch(i, i + dimension);
+                    neighbors.enqueue(boardDown);
+                }
+                if (i - 1 > dimension) {
+                    Board boardLeft = new Board(board);
+                    boardLeft.exch(i, i - 1);
+                    neighbors.enqueue(boardLeft);
+                }
+            }
+        }
+        return neighbors;
+    }
 
+    private void exch(int i, int j) {
+        int c = board[i];
+        board[i] = board[j];
+        board[j] = c;
+    }
 
     // // a board that is obtained by exchanging any pair of tiles
     // public Board twin()
@@ -130,5 +180,10 @@ public class Board {
         tiles[0][n - 1] = n * n - 1;
         Board board2 = new Board(tiles);
         StdOut.println("Same Board with \n" + board2.toString() + "\n" + initial.equals(board2));
+
+        // print neighbors of this board to standard output.
+        for (Board i : initial.neighbors()) {
+            StdOut.println("neighbor: " + i.toString());
+        }
     }
 }
