@@ -93,11 +93,17 @@ public class Solver {
 
     // min number of moves to solve initial board; -1 if unsolvable
     public int moves() {
+        if (!this.solved) {
+            return -1;
+        }
         return this.goal.moves;
     }
 
     // sequence of boards in a shortest solution; null if unsolvable
     public Iterable<Board> solution() {
+        if (!this.solved) {
+            return null;
+        }
         return this.solution;
     }
 
@@ -116,8 +122,11 @@ public class Solver {
         Solver solver = new Solver(initial);
 
         // print solution to standard output
-        if (!solver.isSolvable())
-            StdOut.println("No solution possible");
+        if (!solver.isSolvable()) {
+            StdOut.println(
+                    "No solution possible. move = " + solver.moves() + " solution = " + solver
+                            .solution());
+        }
         else {
             StdOut.println("Minimum number of moves = " + solver.moves());
             for (Board board : solver.solution())
