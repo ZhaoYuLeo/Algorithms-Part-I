@@ -78,7 +78,7 @@ public class Solver {
                 break;
             }
             for (Board nT : minTwin.board.neighbors()) {
-                if (minTwin.prev == null || !nT.equals(min.prev.board)) {
+                if (minTwin.prev == null || !nT.equals(minTwin.prev.board)) {
                     SearchNode neighborNodeTwin = new SearchNode(nT, minTwin.moves + 1, minTwin);
                     pqTwin.insert(neighborNodeTwin);
                 }
