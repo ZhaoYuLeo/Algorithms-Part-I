@@ -120,12 +120,12 @@ public class Board {
         for (int i = 0; i < boardSize; i++) {
             if (board[i] == 0) {
                 // whether board moving needed in four different direction
-                if (i - dimension > 0) {
+                if (i - dimension >= 0) {
                     Board boardUp = new Board(board);
                     boardUp.exch(i, i - dimension);
                     neighbors.enqueue(boardUp);
                 }
-                if (i + 1 < dimension) {
+                if (i % dimension < dimension - 1) {
                     Board boardRight = new Board(board);
                     boardRight.exch(i, i + 1);
                     neighbors.enqueue(boardRight);
@@ -135,7 +135,7 @@ public class Board {
                     boardDown.exch(i, i + dimension);
                     neighbors.enqueue(boardDown);
                 }
-                if (i - 1 > dimension) {
+                if (i % dimension > 0) {
                     Board boardLeft = new Board(board);
                     boardLeft.exch(i, i - 1);
                     neighbors.enqueue(boardLeft);
