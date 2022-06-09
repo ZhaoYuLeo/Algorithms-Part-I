@@ -11,14 +11,14 @@ import edu.princeton.cs.algs4.StdOut;
 
 public class Solver {
     private final Queue<Board> solution = new Queue<Board>();
-    private SearchNode goal = null;
-    private boolean solved = false;
+    private final SearchNode goal = null;
+    private final boolean solved = false;
 
     private class SearchNode implements Comparable<SearchNode> {
-        private Board board;
-        private int moves;
-        private SearchNode prev;
-        private int priority = 0;
+        private final Board board;
+        private final int moves;
+        private final SearchNode prev;
+        private final int priority = 0;
 
         public SearchNode(Board board, int moves, SearchNode prev) {
             this.board = board;
@@ -56,7 +56,7 @@ public class Solver {
 
         SearchNode min;
         SearchNode minTwin;
-        
+
         // one of these must have a solution
         while (!this.solved) {
             min = pq.delMin();
