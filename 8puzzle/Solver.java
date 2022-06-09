@@ -31,6 +31,14 @@ public class Solver {
             return this.board;
         }
 
+        public int getMoves() {
+            return this.moves;
+        }
+
+        public SearchNode getPrev() {
+            return this.prev;
+        }
+
         public boolean isGoal() {
             return this.board.isGoal();
         }
@@ -60,15 +68,15 @@ public class Solver {
         // one of these must have a solution
         while (!this.solved) {
             min = pq.delMin();
-            this.solution.enqueue(min.board);
+            this.solution.enqueue(min.getBoard());
             if (min.isGoal()) {
                 this.solved = true;
                 this.goal = min;
                 break;
             }
-            for (Board n : min.board.neighbors()) {
-                if (min.prev == null || !n.equals(min.prev.board)) {
-                    SearchNode neighborNode = new SearchNode(n, min.moves + 1, min);
+            for (Board n : min.getBoard().neighbors()) {
+                if (min.getPrev() == null || !n.equals(min.getPrev().getBoard())) {
+                    SearchNode neighborNode = new SearchNode(n, min.getMoves() + 1, min);
                     pq.insert(neighborNode);
                 }
             }
@@ -77,9 +85,10 @@ public class Solver {
             if (minTwin.isGoal()) {
                 break;
             }
-            for (Board nT : minTwin.board.neighbors()) {
-                if (minTwin.prev == null || !nT.equals(minTwin.prev.board)) {
-                    SearchNode neighborNodeTwin = new SearchNode(nT, minTwin.moves + 1, minTwin);
+            for (Board nT : minTwin.getBoard().neighbors()) {
+                if (minTwin.getPrev() == null || !nT.equals(minTwin.getPrev().getBoard())) {
+                    SearchNode neighborNodeTwin = new SearchNode(nT, minTwin.getMoves() + 1,
+                                                                 minTwin);
                     pqTwin.insert(neighborNodeTwin);
                 }
             }
@@ -96,7 +105,7 @@ public class Solver {
         if (!this.solved) {
             return -1;
         }
-        return this.goal.moves;
+        return this.goal.getMoves();
     }
 
     // sequence of boards in a shortest solution; null if unsolvable
