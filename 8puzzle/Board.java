@@ -7,7 +7,6 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
-import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Arrays;
 
@@ -158,16 +157,16 @@ public class Board {
             return null;
         }
         Board twinBoard = new Board(board);
-        int index;
-        do {
-            index = StdRandom.uniform(1, boardSize - 1);
-        } while (board[index] == 0);
-
-        if (board[index + 1] == 0) {
-            twinBoard.exch(index, index - 1);
+        if (board[1] == 0) {
+            twinBoard.exch(2, 3);
         }
         else {
-            twinBoard.exch(index, index + 1);
+            if (board[2] == 0) {
+                twinBoard.exch(1, 0);
+            }
+            else {
+                twinBoard.exch(1, 2);
+            }
         }
         return twinBoard;
     }
