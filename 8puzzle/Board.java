@@ -7,6 +7,7 @@
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Arrays;
 
@@ -39,6 +40,7 @@ public class Board {
                     throw new IllegalArgumentException(
                             "Please enter an array containing integers between 0 and n^2 - 1.");
                 }
+                // assume all integers given are unique
                 board[(i * dimension) + j] = tiles[i][j];
             }
         }
@@ -149,8 +151,26 @@ public class Board {
         board[j] = c;
     }
 
-    // // a board that is obtained by exchanging any pair of tiles
-    // public Board twin()
+    // a board that is obtained by exchanging any pair of tiles
+    public Board twin() {
+        if (boardSize < 4) {
+            // no pair tiles exist
+            return null;
+        }
+        Board twinBoard = new Board(board);
+        int index = 0;
+        while (board[index] == 0) {
+            index = StdRandom.uniform(1, boardSize - 1);
+        }
+        if (board[index + 1] == 0) {
+            twinBoard.exch(index, index - 1);
+        }
+        else {
+            twinBoard.exch(index, index + 1);
+        }
+        return twinBoard;
+
+    }
 
     public static void main(String[] args) {
         // create initial board from file
@@ -185,5 +205,8 @@ public class Board {
         for (Board i : initial.neighbors()) {
             StdOut.println("neighbor: " + i.toString());
         }
+
+        // print twin to standard output
+        StdOut.println("twin: " + initial.twin().toString());
     }
 }
