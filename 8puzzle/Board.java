@@ -109,7 +109,7 @@ public class Board {
         if (y == null || getClass() != y.getClass()) {
             return false;
         }
-        return this.toString().equals(y.toString());
+        return Arrays.equals(this.board, ((Board) y).board);
     }
 
     // all neighboring boards
@@ -196,7 +196,7 @@ public class Board {
         StdOut.println("Board has reached goal: " + initial.isGoal());
 
         // compare two boards for equality and print the result to standard output
-        tiles[0][n - 1] = n * n - 1;
+        tiles[0][n - 1] = 3;
         Board board2 = new Board(tiles);
         StdOut.println("Same Board with \n" + board2.toString() + "\n" + initial.equals(board2));
 
