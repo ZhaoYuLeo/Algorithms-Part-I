@@ -158,10 +158,11 @@ public class Board {
             return null;
         }
         Board twinBoard = new Board(board);
-        int index = 0;
-        while (board[index] == 0) {
+        int index;
+        do {
             index = StdRandom.uniform(1, boardSize - 1);
-        }
+        } while (board[index] == 0);
+
         if (board[index + 1] == 0) {
             twinBoard.exch(index, index - 1);
         }
@@ -169,7 +170,6 @@ public class Board {
             twinBoard.exch(index, index + 1);
         }
         return twinBoard;
-
     }
 
     public static void main(String[] args) {
