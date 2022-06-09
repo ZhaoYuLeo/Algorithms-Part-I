@@ -91,10 +91,10 @@ public class Board {
     public int manhattan() {
         int manhattanDis = 0;
         for (int i = 0; i < boardSize; ++i) {
-            int convert = (board[i] != 0) ? Math.abs(board[i] - 1) : board[i];
+            int convert = (board[i] != 0) ? Math.abs(board[i] - 1) : i;
             // manhattan distance is the sum of the vertical and horizontal
             // distance from the tiles to their goal position.
-            manhattanDis += Math.abs(convert / dimension - i / dimension)
+            manhattanDis = Math.abs(convert / dimension - i / dimension)
                     + Math.abs(convert % dimension - i % dimension);
         }
         return manhattanDis;
