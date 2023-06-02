@@ -5,8 +5,8 @@ import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 
 public class Ex_10_VisualCounter {
-    private int maxOperation;
-    private int maxCount;
+    private final int maxOperation;
+    private final int maxCount;
     private int count;
     private int operation;
 
