@@ -150,5 +150,11 @@ public class Ex_35_RandomQueue<Item> implements Iterable<Item> {
         for (Card s : deque) {
             StdOut.println(s);
         }
+
+        StdOut.println("Test deque:");
+        for (int i = 0; i < 5; i += 1) {
+            StdOut.println(deque.dequeue());
+        }
+        StdOut.println("size is " + deque.size());
     }
 }
