@@ -1,6 +1,7 @@
 package chapter1.section4;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 import edu.princeton.cs.algs4.StdOut;
 
@@ -11,6 +12,11 @@ import edu.princeton.cs.algs4.StdOut;
  * https://people.csail.mit.edu/mip/probs.html
  */
 public class Ex_22_BinarySearchOnlyAddSub {
+    public static HashMap<Integer, Integer> cache = new HashMap<>();
+
+    /**
+     * return the index of key in given array
+     */
     public static int binarySearchOnlyAddSub(int key, int[] a) {
         Arrays.sort(a);
 
@@ -33,13 +39,21 @@ public class Ex_22_BinarySearchOnlyAddSub {
     }
 
     public static int splitPoint(int value)  {
+        // since we discard one element, the value we passed in is one less than the fib numbers.
+        if (cache.get(value + 1) != null) {
+            return cache.get(value + 1);
+        }
         int prev = 0;
         int cur = 1;
         while (cur <= value) {
             int temp = prev;
             prev = cur;
             cur = temp + cur;
+            cache.put(cur, prev);
         }
+        // When there is only one element hasn't been checked, we don't need to move.
+        // fib(1) = 1; fib(2) = 1;
+        cache.put(1, 0);
         return prev;
     }
 
