@@ -21,6 +21,7 @@ public class Ex_34_HotOrColdGame {
     }
     private int N;
     private int secret;
+    private int countGuess;
 
     public Ex_34_HotOrColdGame(int N) {
         this.N = N;
@@ -32,23 +33,27 @@ public class Ex_34_HotOrColdGame {
     }
 
     public int findSecret() {
+        this.countGuess = 0;
         return findSecret(1, N);
     }
 
     private int findSecret(int preGuess, int curGuess) {
-        // we will only check the right border.
+        // We will only check the right border.
+        // This step should be considered as two guesses.
         Result r = check(preGuess, curGuess);
+        this.countGuess += 2;
         if (r == Result.EQUAL) {
             return curGuess;
         }
         if (r == Result.HOTTER) {
-            return findSecret((preGuess + curGuess) / 2 + 1, curGuess);
+            // (a + b) / 2 may cause overflow
+            return findSecret(preGuess + (curGuess - preGuess) / 2 + 1, curGuess);
         }
         if (r == Result.COLDER) {
-            return findSecret(preGuess, (preGuess + curGuess) / 2);
+            return findSecret(preGuess, preGuess + (curGuess - preGuess) / 2);
         }
         if (r == Result.SAME && preGuess != curGuess) {
-            return (preGuess + curGuess) / 2;
+            return preGuess + (curGuess - preGuess) / 2;
         }
         return -1;
     }
@@ -67,38 +72,89 @@ public class Ex_34_HotOrColdGame {
         return Result.COLDER;
     }
 
-    public double timeTrial() {
-        // Time findSecret()
-        Stopwatch timer = new Stopwatch();
-        int result = findSecret();
+    public void checkResult(int result) {
         int theory = (this.secret > N || this.secret < 1) ? -1 : this.secret;
         if (result != theory) {
             StdOut.println("error occurred at N " + this.N + " secret " + this.secret + " found " + result);
         }
-        StdOut.println("N " + this.N + " secret " + this.secret + " found " + result);
+    }
+
+    public double countTrial() {
+        // Count guesses
+        checkResult(findSecret());
+        return this.countGuess;
+    }
+
+    public double timeTrial() {
+        // Time findSecret()
+        Stopwatch timer = new Stopwatch();
+        checkResult(findSecret());
         return timer.elapsedTime();
+    }
+
+    public static void draw(double[] xs, double[] ys) {
+        // Assume we get two sorted array.
+        for (int i = 0; i < xs.length; i += 1) {
+            // N -> lg N
+            xs[i] = (Math.log(xs[i]) / Math.log(2));
+        }
+        StdDraw.setXscale(xs[0] - 1, xs[xs.length - 1] + 1);
+        StdDraw.setYscale(ys[0] - 1, ys[ys.length - 1] + 1);
+        StdDraw.setPenRadius(0.02);
+        for (int i = 0; i< xs.length; i += 1) {
+            StdDraw.point(xs[i], ys[i]);
+        }
     }
 
     public static void main(String[] args) {
         // set scale
-        int MAXSCALE = 400000000;
-        int INTERVAL = 400000000;
-        int COUNT = 100;
+        int MAXSCALE = 1000000;
+        int INTERVAL = 250;
+        int COUNT = 100000;
         // run test
-        double[] results = new double[MAXSCALE / INTERVAL];
+        double[] results = new double[(int)(Math.log(MAXSCALE / INTERVAL) / Math.log(2)) + 1];
+        double[] ns = new double[results.length];
+        int i = 0;
         for (int N = INTERVAL; N <= MAXSCALE; N += N) {
             Ex_34_HotOrColdGame g = new Ex_34_HotOrColdGame(N);
-            double totalTime = 0;
-            for (int i = 0; i < COUNT ; i += 1) {
+            double totalGuess = 0;
+            // double totalTime = 0;
+            for (int c = 0; c < COUNT ; c += 1) {
+                // Argument StdRandom.uniform can take is less than Integer.MAX_VALUE
                 g.setSecret(StdRandom.uniform(1, N + 1));
-                totalTime += g.timeTrial();
+                totalGuess += g.countTrial();
+                // totalTime += g.timeTrial();
             }
-            double averageTime = totalTime / COUNT;
-            results[N / INTERVAL - 1] = averageTime;
+            ns[i] = N;
+            results[i++] = totalGuess / COUNT;
+            // results[i++] = totalTime;
         }
         // show result
         for (double r : results) {
             StdOut.println(r);
         }
+        // draw plot
+        Ex_34_HotOrColdGame.draw(ns, results);
+
+        // // draw plot(result of one experiment) 
+        // int MAXSCALE = 1000000000;
+        // int INTERVAL = 100000000;
+        // int COUNT = 100000000;
+        // double[] x = new double[10];
+        // for (int N = INTERVAL; N <= MAXSCALE; N += INTERVAL) {
+        //     x[N / INTERVAL - 1] = N;
+        // }
+        // double[] y = {15.288999999996966,
+        //          15.799999999996682,
+        //          16.393999999997053,
+        //          16.517999999997205,
+        //          16.745999999997483,
+        //          17.040999999997844,
+        //          17.03299999999783,
+        //          17.529999999998438,
+        //          17.540999999998455,
+        //          17.60199999999853,
+        //         };
+        // Ex_34_HotOrColdGame.draw(x, y);
     }
 }
