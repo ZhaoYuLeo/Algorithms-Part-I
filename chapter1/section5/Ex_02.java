@@ -53,7 +53,7 @@ public class Ex_02 {
         if (pRoot == qRoot) {
             return;
         }
-        id[p] = qRoot;
+        id[pRoot] = qRoot;
         this.times += 2;
         count -= 1;
         StdOut.println(this);
