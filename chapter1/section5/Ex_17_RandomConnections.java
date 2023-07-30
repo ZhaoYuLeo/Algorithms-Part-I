@@ -24,9 +24,9 @@ public class Ex_17_RandomConnections {
 
         while (uf.count() != 1) {
             randomPairs(N);
+            connections += 1;
             if (uf.connected(p, q)) continue;
             uf.union(p, q);
-            connections += 1;
         }
 
         return connections;
