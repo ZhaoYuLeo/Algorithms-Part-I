@@ -35,6 +35,7 @@ public class Ex_03 extends UF {
     }
 
     public void union(int p, int q) {
+        StdOut.println("Union " + p + " and " + q);
         this.times = 0;
         int pRoot = find(p);
         int qRoot = find(q);
@@ -62,7 +63,6 @@ public class Ex_03 extends UF {
         StdDraw.setYscale(-2, 25);
         StdDraw.setPenRadius(0.01);
         for (int i = 1; i < sequence.length; i += 2) {
-            StdOut.println("Union " + sequence[i - 1] + " and " + sequence[i]);
             uf.union(sequence[i - 1], sequence[i]);
             uf.drawTree();
         }

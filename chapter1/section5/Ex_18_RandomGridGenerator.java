@@ -16,7 +16,7 @@ import chapter1.section3.Ex_34_RandomBag;
  */
 public class Ex_18_RandomGridGenerator {
 
-    private static class Connection {
+    public static class Connection {
         int p;
         int q;
 
