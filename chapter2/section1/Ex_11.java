@@ -7,7 +7,7 @@ import edu.princeton.cs.algs4.StdOut;
  * array, rather than computing it.
  */
 public class Ex_11 extends Sort {
-    public static <T extends Comparable<T>> void shellSort(T[] a) {
+    public static <T extends Comparable<T>> void sort(T[] a) {
         int N = a.length;
         int[] hs = generateHsequence(N);
 
@@ -43,7 +43,7 @@ public class Ex_11 extends Sort {
 
     public static void main(String[] args) {
         String[] a = {"S", "H", "E", "L", "L", "S", "O", "R", "T", "E", "X", "A", "M", "P", "L", "E"};
-        shellSort(a);
+        sort(a);
         show(a);
     }
 }

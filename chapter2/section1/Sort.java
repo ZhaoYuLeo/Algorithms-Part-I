@@ -5,6 +5,9 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
 
 public abstract class Sort {
+    public static <T extends Comparable<T>> void sort(T[] a) {
+        /* */
+    }
 
     public static <T extends Comparable<T>> boolean less(T v, T w) {
         return v.compareTo(w) < 0;
