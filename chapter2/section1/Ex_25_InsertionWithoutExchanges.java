@@ -38,42 +38,18 @@ public class Ex_25_InsertionWithoutExchanges extends Sort {
         }
     }
 
-    public static <T extends Comparable<T>> double time(String alg, T[] a) {
-        Stopwatch timer = new Stopwatch();
-        if (alg.equals("Insertion")) {
-            insertionSort(a);
-        }
-        if (alg.equals("InsertionWithoutExchanges")) {
-            sort(a);
-        }
-        return timer.elapsedTime();
-    }
-
-    public static double timeRandomInput(String alg, int N, int T) {
-        // Use alg to sort T random arrays of length N.
-        double total = 0.0;
-        Double[] a = new Double[N];
-        for (int t = 0; t < T; t += 1) {
-            // Perform one experiment (generate and sort an array).
-            for (int i = 0; i < N; i += 1) {
-                a[i] = StdRandom.uniform();
-            }
-            total += time(alg, a);
-        }
-        return total;
-    }
-
     public static void main(String[] args) {
         String[] a = {"S", "H", "E", "L", "L", "S", "O", "R", "T", "E", "X", "A", "M", "P", "L", "E"};
         insertionSort(a);
         show(a);
 
-        String alg1 = args[0];
-        String alg2 = args[1];
-        int N = Integer.parseInt(args[2]);
-        int T = Integer.parseInt(args[3]);
-        double t1 = timeRandomInput(alg1, N, T); // total for alg1
-        double t2 = timeRandomInput(alg2, N, T); // total for alg2
+        String alg1 = "insert";
+        String alg2 = "noexchinsert";
+
+        int N = Integer.parseInt(args[0]);
+        int T = Integer.parseInt(args[1]);
+        double t1 = SortCompare.timeRandomInput(alg1, N, T); // total for alg1
+        double t2 = SortCompare.timeRandomInput(alg2, N, T); // total for alg2
         StdOut.printf("For %d random Doubles\n %s is", N, alg1);
         StdOut.printf(" %.1f times faster than %s\n", t2/t1, alg2);
 
