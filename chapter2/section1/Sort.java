@@ -1,11 +1,20 @@
 package chapter2.section1;
 
-
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
 
 public abstract class Sort {
-    public static <T extends Comparable<T>> void sort(T[] a) {
+    private final String name;
+
+    public Sort(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public <T extends Comparable<T>> void sort(T[] a) {
         /* */
     }
 

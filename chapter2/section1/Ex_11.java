@@ -7,7 +7,12 @@ import edu.princeton.cs.algs4.StdOut;
  * array, rather than computing it.
  */
 public class Ex_11 extends Sort {
-    public static <T extends Comparable<T>> void sort(T[] a) {
+
+    public Ex_11() {
+        super("Shellsort Keeps the Increment Sequence");
+    }
+
+    public <T extends Comparable<T>> void sort(T[] a) {
         int N = a.length;
         int[] hs = generateHsequence(N);
 
@@ -43,7 +48,8 @@ public class Ex_11 extends Sort {
 
     public static void main(String[] args) {
         String[] a = {"S", "H", "E", "L", "L", "S", "O", "R", "T", "E", "X", "A", "M", "P", "L", "E"};
-        sort(a);
+        Sort instance = new Ex_11();
+        instance.sort(a);
         show(a);
     }
 }

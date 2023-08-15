@@ -11,7 +11,11 @@ import edu.princeton.cs.algs4.StdRandom;
 public class Ex_12 extends Sort {
     public static int compares;
 
-    public static <T extends Comparable<T>> void shellSort(T[] a) {
+    public Ex_12() {
+        super("Shellsort Print the Number of Compares");
+    }
+
+    public <T extends Comparable<T>> void sort(T[] a) {
 
         int N = a.length;
         int h = 1;
@@ -45,8 +49,9 @@ public class Ex_12 extends Sort {
 
     public static void main(String[] args) {
         int maxScale = 10000000;
+        Sort instance = new Ex_12();
         for (int i = 10; i < maxScale; i *= 10) {
-            shellSort(randomArray(i));
+            instance.sort(randomArray(i));
         }
     }
 }
