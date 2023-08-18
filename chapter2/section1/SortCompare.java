@@ -1,12 +1,14 @@
 package chapter2.section1;
 
+import java.util.ArrayList;
+
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Stopwatch;
 
 
 public class SortCompare {
-    public static double time(Sort alg, Double[] a) {
+    public static <T extends Comparable<T>> double time(Sort alg, T[] a) {
         Stopwatch timer = new Stopwatch();
         alg.sort(a);
         return timer.elapsedTime();
@@ -22,6 +24,27 @@ public class SortCompare {
             total += time(alg, a);
         }
         return total;
+    }
+
+    public static ArrayList<Double> timeRandomArraysWithCertainValues(Sort alg, int N, int T, int scale, int initSize) {
+        ArrayList<Double> totals = new ArrayList<>();
+        int size = initSize;
+        N = (int)(Math.pow(2, N));
+
+        while (size < N) {
+            double total = 0.0;
+            for (int t = 0; t < T; t += 1) {
+                Integer[] a = new Integer[size];
+                for (int i = 0; i < size; i += 1) {
+                    a[i] = StdRandom.uniform(scale);
+                }
+                total += time(alg, a);
+            }
+            StdOut.printf("%5d %.1f\n", size, total);
+            totals.add(total);
+            size += size;
+        }
+        return totals;
     }
 
     public static void main(String[] args) {
