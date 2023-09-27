@@ -146,6 +146,18 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
         return keys[i];
     }
 
+    public Key floor(Key key) {
+        int i = rank(key);
+        if (i < N && keys[i].compareTo(key) == 0) {
+            return keys[i];
+        }
+        if (i == 0) {
+            return null;
+        } else {
+            return keys[i - 1];
+        }
+    }
+
     public Iterable<Key> keys(Key lo, Key hi) {
         Queue<Key> q = new Queue<>();
         for (int i = rank(lo); i < rank(hi); i += 1) {
@@ -172,6 +184,12 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
             StdOut.println(s + " " + st.get(s));
         }
         StdOut.println("The size is: " + st.size());
+
+        String[] without = {"X", "B", "F", "", "Y", "T", "a"};
+        for (int i = 0; i < without.length; i += 1) {
+            StdOut.println("The ceiling of " + without[i] +" is: " + st.ceiling(without[i]));
+            StdOut.println("The floor of " + without[i] +" is: " + st.floor(without[i]));
+        }
 
         for (int i = 0; i < 3; i += 1) {
             String key = str[StdRandom.uniform(str.length)];
