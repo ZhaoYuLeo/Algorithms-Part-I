@@ -14,7 +14,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class Ex_01 {
     public static void main(String[] args) {
         // create a symbol table mapping letter grades to numerical scores.
-        ST<String, Double> grades = new SequentialSearchST<>();
+        ST<String, Double> grades = new Ex_05_SequentialSearchST<>();
         grades.put("A+", 4.33);
         grades.put("A", 4.00);
         grades.put("A-", 3.67);
