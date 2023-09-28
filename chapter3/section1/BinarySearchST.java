@@ -101,7 +101,7 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
     }
 
     public void delete(Key key) {
-        if (key == null && isEmpty()) {
+        if (key == null || isEmpty()) {
             return;
         }
         int i = rank(key);
