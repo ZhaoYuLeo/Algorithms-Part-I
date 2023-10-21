@@ -2,6 +2,7 @@ package chapter3.section2;
 
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
@@ -253,6 +254,20 @@ public class Ex_34_Threading<Key extends Comparable<Key>, Value> {
         return x;
     }
 
+    /**
+     * Return the tree without the min and keep the pred and the succ links of the min unchanged.
+     * This method is called by delete() to prevent the succ links from being cutting off by
+     * deleteMin() when adjusting the structure.
+     */
+    private Node minMoved(Node x) {
+        if (x.left == null) {
+            return x.right;
+        }
+        x.left = minMoved(x.left);
+        x.N = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
     public void deleteMax() {
         root = deleteMax(root);
     }
@@ -296,7 +311,7 @@ public class Ex_34_Threading<Key extends Comparable<Key>, Value> {
             }
             Node t = x;
             x = min(t.right);
-            x.right = deleteMin(t.right);
+            x.right = minMoved(t.right);
             x.left = t.left;
 
             t.prev.succ = t.succ;
@@ -360,15 +375,17 @@ public class Ex_34_Threading<Key extends Comparable<Key>, Value> {
 
         for (String s : st.levelOrder()) {
             StdOut.println(s + " " + st.get(s));
+            StdOut.println("for " + s + " prev is " + st.prev(s) + "; succ is " + st.next(s));
         }
 
         StdOut.println();
 
-        for (String s : st.keys()) {
+        st.delete("e");
+
+        for (String s : st.levelOrder()) {
             StdOut.println(s + " " + st.get(s));
             StdOut.println("for " + s + " prev is " + st.prev(s) + "; succ is " + st.next(s));
         }
-
 
     }
 }
