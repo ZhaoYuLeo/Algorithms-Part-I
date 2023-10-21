@@ -20,6 +20,7 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
         private Node left, right;   // links to subtrees
         private int N;              // # nodes in subtree rooted here
         private double x, y;        // the x and y coordinates
+        private Node pred, succ;    // links to the predecessor and successor nodes
 
         public Node(Key key, Value val, int N) {
             this.key = key;
@@ -63,18 +64,29 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
 
     public void put(Key key, Value val) {
         // Search for key. Update value if found; grow table if new.
-        root = put(root, key, val);
+        root = put(root, key, val, null, null);
     }
 
-    private Node put(Node x, Key key, Value val) {
+    private Node put(Node x, Key key, Value val, Node pred, Node succ) {
         // Change key's value to val if key in subtree rooted at x.
         // Otherwise, add new node to subtree associating key with val.
-        if (x == null) return new Node(key, val, 1);
+        if (x == null) {
+            Node node = new Node(key, val, 1);
+            if (pred != null) {
+                pred.succ = node;
+                node.pred = pred;
+            }
+            if (succ != null) {
+                node.succ = succ;
+                succ.pred = node;
+            }
+            return node;
+        }
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
-            x.left = put(x.left, key, val);
+            x.left = put(x.left, key, val, pred, x);
         } else if (cmp > 0) {
-            x.right = put(x.right, key, val);
+            x.right = put(x.right, key, val, x, succ);
         } else {
             x.val = val;
         }
@@ -203,9 +215,26 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
 
     private Node deleteMin(Node x) {
         if (x.left == null) {
+            if (x.succ != null) {
+                x.succ.pred = null;
+            }
             return x.right;
         }
         x.left = deleteMin(x.left);
+        x.N = size(x.left) + size(x.right) + 1;
+        return x;
+    }
+
+    /**
+     * Return the tree without the min and keep the pred and the succ links of the min unchanged.
+     * This method is called by delete() to prevent the succ links from being cutting off by
+     * deleteMin() when adjusting the structure.
+     */
+    private Node minMoved(Node x) {
+        if (x.left == null) {
+            return x.right;
+        }
+        x.left = minMoved(x.left);
         x.N = size(x.left) + size(x.right) + 1;
         return x;
     }
@@ -216,6 +245,9 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
 
     private Node deleteMax(Node x) {
         if (x.right == null) {
+            if (x.pred != null) {
+                x.pred.succ = null;
+            }
             return x.left;
         }
         x.right = deleteMax(x.right);
@@ -237,16 +269,24 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
         } else if (cmp > 0) {
             x.right = delete(x.right, key);
         } else {
-            if (x.right == null) {
+            if (x.right == null && x.left == null) {
+                return null;
+            }
+            if (x.right == null && x.pred != null) {
+                x.pred.succ = x.succ;
                 return x.left;
             }
-            if (x.left == null) {
+            if (x.left == null && x.succ != null) {
+                x.succ.pred = x.pred;
                 return x.right;
             }
             Node t = x;
             x = min(t.right);
-            x.right = deleteMin(t.right);
+            x.right = minMoved(t.right);
             x.left = t.left;
+            
+            t.pred.succ = t.succ;
+            t.succ.pred = t.pred;
         }
         x.N = size(x.left) + size(x.right) + 1;
         return x;
@@ -298,20 +338,12 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
 
     /** Draw BST figures */
     public void draw() {
-        double R = 0.25; // The radius of the node
-        double[] scale = {0, 0, 0}; // The scale of the tree
-        setCoordinates(root, 0, 0, scale);
-        double max = 0;
-        for (double x : scale) {
-            if (Math.abs(x) > max) {
-                max = Math.abs(x);
-            }
-        }
+        double R = 0.35; // The radius of the node
+        setXCoordinates();
+        setYCoordinates(root, 0);
 
-        // StdDraw.setXscale(scale[1] - 2, scale[2] + 2);
-        // StdDraw.setYscale(scale[0] - 2, 2);
-        StdDraw.setXscale(scale[1] - 2, (max + scale[1]) + 2);
-        StdDraw.setYscale(- max - 2, 2);
+        StdDraw.setXscale(- 1, root.N);
+        StdDraw.setYscale( - root.N, 1);
         StdDraw.setPenRadius(0.005);
 
         drawLine(root);
@@ -336,6 +368,12 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
         if (n == null) {
             return;
         }
+        if (n.left == null) {
+            StdDraw.line(n.x, n.y, n.x - 0.3, n.y - 0.5);
+        }
+        if (n.right == null) {
+            StdDraw.line(n.x, n.y, n.x + 0.3, n.y - 0.5);
+        }
         if (n.left != null) {
             StdDraw.line(n.x, n.y, n.left.x, n.left.y);
         }
@@ -346,35 +384,40 @@ public class Ex_38_TreeDrawing<Key extends Comparable<Key>, Value> {
         drawLine(n.right);
     }
 
-    private void setCoordinates(Node n, double x, double y, double[] scale) {
+    private void setXCoordinates() {
+        Node node = min(root);
+        node.x = 0;
+        while (node.succ != null) {
+            node.succ.x = node.x + 1;
+            node = node.succ;
+        }
+    }
+
+    private void setYCoordinates(Node n, double y) {
         if (n == null) {
             return;
         }
-        assert scale.length == 3;
-        if (scale[0] > y) {
-            scale[0] = y; // -∞ ← 0
-        }
-        if (scale[1] > x) {
-            scale[1] = x; // -∞ ← 0
-        }
-        if (scale[2] < x) {
-            scale[2] = x; // 0 → +∞
-        }
-        n.x = x;
+        // Do you know the shape of the tree produced by the following commented out code?
+        // if (n.succ != null && n.succ.x == 0) {
+        //     n.succ.x = n.x + 1;
+        // }
+        // if (n.pred != null && n.pred.x == 0) {
+        //     n.pred.x = n.x - 1;
+        // }
         n.y = y;
-        setCoordinates(n.left, x - 1, y - 1, scale);
-        setCoordinates(n.right, x + 1, y - 1, scale);
+        setYCoordinates(n.left, y - 1);
+        setYCoordinates(n.right, y - 1);
     }
 
-        for (String s : st.levelOrder()) {
-            StdOut.println(s + " " + st.get(s));
+    public static void main(String[] args) {
+        Ex_38_TreeDrawing<String, Integer> st = new Ex_38_TreeDrawing<String, Integer>();
+        String[] str = {"S", "E", "X", "A", "R", "C", "H", "M"};
+        for (int i = 0; i < str.length; i += 1) {
+            String key = str[i];
+            st.put(key, i);
         }
-
-        for (String s : st.keys()) {
-            StdOut.println(s + " " + st.get(s));
-        }
-
         st.draw();
-
+        st.delete("E");
+        st.draw();
     }
 }
