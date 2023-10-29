@@ -16,6 +16,13 @@ public class HeapMaxPQ<Key extends Comparable<Key>> implements MaxPQ<Key> {
         pq = (Key[]) new Comparable[maxN + 1];
     }
 
+    /**
+     * Create an empty priority queue
+     */
+    public HeapMaxPQ() {
+        this(1);
+    }
+
     @Override
     public int size() {
         return N;
