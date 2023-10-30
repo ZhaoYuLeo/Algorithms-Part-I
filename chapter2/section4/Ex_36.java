@@ -19,7 +19,7 @@ public class Ex_36 {
             double total = 0;
             for (int t = 0; t < times; t += 1) {
                 Stopwatch timer = new Stopwatch();
-                driver(StdRandom.uniform(capacity[i]));
+                driver(capacity[i]);
                 total += timer.elapsedTime();
             }
             StdOut.printf("%7d %8.5f\n", capacity[i], total / times);
@@ -47,16 +47,16 @@ public class Ex_36 {
         for (int i = 1; i < 9; i += 1) {
             capacity[i - 1] = (int)Math.pow(10, i);
         }
-        timeTrial(capacity, 10);
+        timeTrial(capacity, 20);
 
         // Output:
-        //       10  0.00040
-        //      100  0.00090
-        //     1000  0.00110
-        //    10000  0.00300
-        //   100000  0.02220
-        //  1000000  0.34150
-        // 10000000  2.51990
+        //       10  0.00025
+        //      100  0.00050
+        //     1000  0.00075
+        //    10000  0.00395
+        //   100000  0.04785
+        //  1000000  0.94670
+        // 10000000 18.00725
     }
 
 }
