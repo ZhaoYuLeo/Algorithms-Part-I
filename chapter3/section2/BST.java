@@ -10,7 +10,7 @@ import edu.princeton.cs.algs4.StdOut;
 public class BST<Key extends Comparable<Key>, Value> {
     private Node root;              // root of BST
 
-    private class Node {
+    public class Node {
         private Key key;            // key
         private Value val;          // associated value
         private Node left, right;   // links to subtrees
@@ -48,7 +48,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         }
         int cmp = key.compareTo(x.key);
 
-        StdOut.println(x.key);
+        // StdOut.println(x.key);
 
         if (cmp < 0) {
             return get(x.left, key);
@@ -64,7 +64,7 @@ public class BST<Key extends Comparable<Key>, Value> {
         root = put(root, key, val);
     }
 
-    private Node put(Node x, Key key, Value val) {
+    public Node put(Node x, Key key, Value val) {
         // Change key's value to val if key in subtree rooted at x.
         // Otherwise, add new node to subtree associating key with val.
         if (x == null) return new Node(key, val, 1);
@@ -294,8 +294,21 @@ public class BST<Key extends Comparable<Key>, Value> {
         return keys;
     }
 
+    public int isBinaryTree() {
+        return isBinaryTree(root, 0, 0);
+    }
+
+    private int isBinaryTree(Node x, int count, int passed) {
+        if (x == null) {
+            return count;
+        }
+        passed += 1;
+        count += (x.N - passed);
+        return isBinaryTree(x.left, 0, passed) + isBinaryTree(x.right, count, passed);
+    }
+
     public static void main(String[] args) {
-        Ex_06_BST<String, Integer> st = new Ex_06_BST<String, Integer>();
+        BST<String, Integer> st = new BST<String, Integer>();
         for (int i = 0; !StdIn.isEmpty(); i += 1) {
             String key = StdIn.readString();
             st.put(key, i);
@@ -310,6 +323,8 @@ public class BST<Key extends Comparable<Key>, Value> {
         for (String s : st.keys()) {
             StdOut.println(s + " " + st.get(s));
         }
+
+        StdOut.println(st.isBinaryTree());
 
     }
 }
