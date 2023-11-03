@@ -38,6 +38,13 @@ public class WeightedQuickUnionUF {
     }
 
     /**
+     * Returns the weight of site
+     */
+    public int weight(int p) {
+        return sz[p];
+    }
+
+    /**
      * Returns the numebr of sets.
      */
     public int find(int p) {
