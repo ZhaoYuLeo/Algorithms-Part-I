@@ -1,7 +1,8 @@
 package chapter2.section4;
 
-import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 
 /**
  * Index priority-queue implementation. Implement the basic operations in the index priority-queue
@@ -36,7 +37,7 @@ public class Ex_33_IndexPriorityQueue<Item extends Comparable<Item>> {
      */
     private void sink(int k) {
         while (2 * k <= N) {
-            int j = 2 * N;
+            int j = 2 * k;
             if (j < N && less(j + 1, j)) {
                 j += 1;
             }
@@ -75,7 +76,21 @@ public class Ex_33_IndexPriorityQueue<Item extends Comparable<Item>> {
      * change the item associated with k to item
      */
     public void change(int k, Item item) {
+        // int cmp = item.compareTo(keys[k]); 
+        // keys[k] = item;
+        // int index = qp[k];
+        // if (index == 0) {
+        //     return;
+        // }
+        // if (cmp < 0) {
+        //     swim(index);
+        //     return;
+        // }
+        // sink(index);
         keys[k] = item;
+        // Better. Swim and sink will check
+        swim(qp[k]);
+        sink(qp[k]);
     }
 
     /**
@@ -101,6 +116,12 @@ public class Ex_33_IndexPriorityQueue<Item extends Comparable<Item>> {
      * remove k and its associated item
      */
     public void delete(int k) {
+        exch(k, N--);
+        swim(qp[k]);
+        sink(qp[k]);
+        keys[pq[N + 1]] = null;
+        qp[pq[N + 1]] = -1;
+        // pq[N + 1] = null; // remove key stored in pq
     }
 
     /**
@@ -122,11 +143,10 @@ public class Ex_33_IndexPriorityQueue<Item extends Comparable<Item>> {
      */
     public int delMin() {
         int minIndex = pq[1];
-        exch(1, N);
+        exch(1, N--);
         sink(1);
-        keys[pq[N]] = null; 
-        qp[pq[N]] = -1;
-        N -= 1;
+        keys[pq[N + 1]] = null; 
+        qp[pq[N + 1]] = -1;
         return minIndex;
     }
 
@@ -161,6 +181,13 @@ public class Ex_33_IndexPriorityQueue<Item extends Comparable<Item>> {
             int i = pq.delMin();
             if (!streams[i].isEmpty()) {
                 pq.insert(i, streams[i].readString());
+            }
+            if (StdRandom.random() < 0.4) {
+                int key = StdRandom.uniform(N);
+                StdOut.println("delete " + key);
+                if (pq.contains(key)) {
+                    pq.delete(key);
+                }
             }
         }
     }
