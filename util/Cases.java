@@ -110,6 +110,17 @@ public class Cases {
     }
 
     /**
+     * Return an integer array of size N with random value(make the range customized)
+     */
+    public static Integer[] randomArray(int N, int min, int max) {
+        Integer[] a = new Integer[N];
+        for (int i = 0; i < N; i += 1) {
+            a[i] = StdRandom.uniform(min, max); 
+        }
+        return a;
+    }
+
+    /**
      * Return an integer array of size N with distinct random value
      */
     public static Integer[] randomDistinctArray(int N) {

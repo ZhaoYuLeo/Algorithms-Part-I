@@ -1,19 +1,16 @@
 package util;
 
-import java.awt.Font;
 import java.util.Arrays;
 
 import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
+import static util.Constants.*;
+
 /**
  * Draw axis, title and labels
  */
 public class DrawFrame {
-    private final static double pen0 = .002;
-    private final static double pen1 = .004;
-    private final static double pen2 = .009;
-
     private static double xMargin  = 0.5;
     private static double yMargin  = 0.5;
     private static double xPadding = 1;
@@ -52,29 +49,56 @@ public class DrawFrame {
         Y1 = y1 + yMargin;
         StdDraw.setXscale(X0, X1);
         StdDraw.setYscale(Y0, Y1);
-        StdDraw.setPenRadius(pen1);
+        StdDraw.setPenRadius(PEN1);
     }
 
+    /**
+     * Setup coordinates system and title the graph 
+     *
+     * @param x0 min x
+     * @param x1 max x
+     * @param y0 min y
+     * @param y1 max y
+     * @param title title of the graph
+     */
     public static void setup(double x0, double x1, double y0, double y1, String title) {
         setup(x0, x1, y0, y1);
-        StdDraw.setYscale(Y0 - .2 * yMargin, Y1);
-        StdDraw.setFont(new Font("SansSerif", Font.BOLD, 14));
+        StdDraw.setYscale(Y0 - .2 * yMargin, Y1); // add margin for title
+        StdDraw.setFont(TITLE_FONT);
         StdDraw.text((X1 + X0) / 2, Y0, title);
     }
 
 
-    public static void drawAxis(int x0, int x1, int y0, int y1, String xLabel, String yLabel) {
-        StdDraw.setFont(new Font("SansSerif", Font.BOLD, 12));
-        StdDraw.setXscale(X0 - xPadding, X1);
+    /**
+     * Draw the x-axis and y-axis and title both
+     *
+     * @param x0 min value in x-axis recorded
+     * @param x1 max value in x-axis recorded
+     * @param y0 min value in y-axis recorded
+     * @param y1 max value in y-axis recorded
+     * @param xLabel
+     * @param yLabel
+     */
+    public static void drawAxis(double x0, double x1, double y0, double y1, String xLabel, String yLabel) {
+        StdDraw.setFont(AXISTITLE_FONT);
+        StdDraw.setXscale(X0 - xPadding, X1); // add padding for title
         StdDraw.setYscale(Y0 - yPadding, Y1);
-        int xBase = 0;
+        int xBase = 0; // assume both of them start at 0
         int yBase = 0;
-        StdDraw.text((x1 - x0) / 2, yBase - 5 * yDiv, xLabel);
-        StdDraw.text(xBase - 5 * xDiv, (y1 - y0) / 2, yLabel, 90);
+        StdDraw.text((x1 + x0) / 2, yBase - 5 * yDiv, xLabel);
+        StdDraw.text(xBase - 5 * xDiv, (y1 + y0) / 2, yLabel, 90);
         drawAxis(x0, x1, y0, y1);
     }
 
-    public static void drawAxis(int x0, int x1, int y0, int y1) {
+    /**
+     * Draw the x-axis and y-axis 
+     *
+     * @param x0
+     * @param x1
+     * @param y0
+     * @param y1
+     */
+    public static void drawAxis(double x0, double x1, double y0, double y1) {
         int xBase = 0;
         int yBase = 0;
         // x-axis
@@ -82,44 +106,46 @@ public class DrawFrame {
         // y-axis
         StdDraw.line(xBase, y0, xBase, y1);
         // extra info
-        StdDraw.setPenRadius(pen0);
-        StdDraw.setFont(new Font("SansSerif", Font.PLAIN, 10));
+        StdDraw.setFont(LABEL_FONT);
         // divide lines in x-axis
-        drawXDiv(x0, yBase, Integer.toString(x0));
-        for (int i = x0 == 0 ? 1 : x0; i <= x1; i += i) {
+        drawXDiv((int)(x0), yBase, String.valueOf((int)(x0)));
+        for (int i = (int)x0 == 0 ? 1 : (int)x0; i <= x1; i += i) {
             if (i > (x1 - x0) / 10) {
-                drawXDiv(i, yBase, Integer.toString(i));
+                drawXDiv(i, yBase, String.valueOf(i));
             }
         }
-        drawXDiv(x1, yBase, Integer.toString(x1));
+        drawXDiv((int)(x1), yBase, String.valueOf((int)(x1)));
         // divide lines in y-axis
-        drawYDiv(xBase, y0, Integer.toString(y0));
-        for (int i = y0 == 0 ? 1 : y0; i <= y1; i += i) {
+        drawYDiv(xBase, y0, String.valueOf(y0));
+        for (int i = (int)y0 == 0 ? 1 : (int)y0; i <= y1; i += i) {
             if (i > (y1 - y0) / 10) {
-                drawYDiv(xBase, i, Integer.toString(i));
+                drawYDiv(xBase, i, String.valueOf(i));
             }
         }
-        drawYDiv(xBase, y1, Integer.toString(y1));
+        drawYDiv(xBase, y1, String.valueOf(y1));
     }
 
-    private static void drawXDiv(double x, double y, String text) {
+    public static void drawXDiv(double x, double y, String text) {
+        StdDraw.setPenRadius(PEN0);
         StdDraw.line(x, y, x, y - yDiv);
         StdDraw.text(x, y - 2.5 * yDiv, text);
     }
 
-    private static void drawYDiv(double x, double y, String text) {
+    public static void drawYDiv(double x, double y, String text) {
+        StdDraw.setPenRadius(PEN0);
         StdDraw.line(x, y, x- xDiv, y);
         StdDraw.text(x - 2.5 * xDiv, y, text);
     }
 
     public static void chart(double x0, double y0, double x1, double y1, String xLabel, String yLabel) {
+        // assume x1 > x0 && y1 > y0;
         setup(x0, y0, x1, y1);
-        drawAxis((int)x0, (int)y0, (int)x1, (int)y1, xLabel, yLabel);
+        drawAxis(x0, y0, x1, y1, xLabel, yLabel);
     }
 
     public static void chart(double x0, double y0, double x1, double y1) {
         setup(x0, y0, x1, y1);
-        drawAxis((int)x0, (int)y0, (int)x1, (int)y1);
+        drawAxis(x0, y0, x1, y1);
     }
 
     public static void test() {
