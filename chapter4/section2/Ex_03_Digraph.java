@@ -1,6 +1,7 @@
-package chapter4.section1;
+package chapter4.section2;
 
 import edu.princeton.cs.algs4.Bag;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
 
@@ -26,7 +27,12 @@ public class Ex_03_Digraph {
     public Ex_03_Digraph(Ex_03_Digraph G) {
         this(G.V());
         for (int v = 0; v < V; v += 1) {
+            // TODO: change adj() to make it support reverse iterator
+            Stack<Integer> stack = new Stack<>();
             for (int w : G.adj(v)) {
+                stack.push(w);
+            }
+            for (int w : stack) {
                 addEdge(v, w);
             }
         }
@@ -79,8 +85,16 @@ public class Ex_03_Digraph {
         d1.addEdge(0, 4);
         d1.addEdge(1, 2);
 
+        StdOut.println("Digraph a");
         StdOut.println(d1);
 
-        Ex_03_Digraph d2 = new Ex_03_Digraph(5);
+        Ex_03_Digraph d2 = new Ex_03_Digraph(d1);
+
+
+        StdOut.println("Copied for Digraph a and made changes");
+        StdOut.println(d2);
+
+        StdOut.println("Digraph a doesn't change");
+        StdOut.println(d1);
     }
 }
