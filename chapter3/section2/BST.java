@@ -1,5 +1,7 @@
 package chapter3.section2;
 
+import java.util.NoSuchElementException;
+
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
@@ -80,7 +82,21 @@ public class BST<Key extends Comparable<Key>, Value> {
         return x;
     }
 
+    /**
+     * Returns true if this BST is empty.
+     *
+     * @return {@code true} if this BST is empty
+     *         {@code false} otherwise
+     */
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     public Key min() {
+        if (isEmpty()) {
+            // make sure keys() works fine when the tree is empty
+            throw new NoSuchElementException("called min() with empty BST");
+        }
         return min(root).key;
     }
 
@@ -92,6 +108,10 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     public Key max() {
+        if (isEmpty()) {
+            // make sure keys() works fine when the tree is empty
+            throw new NoSuchElementException("called max() with empty BST");
+        }
         return max(root).key;
     }
 
@@ -196,6 +216,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 
 
     public void deleteMin() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("BST underflow error");
+        }
         root = deleteMin(root);
     }
 
@@ -209,6 +232,9 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     public void deleteMax() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("BST underflow error");
+        }
         root = deleteMax(root);
     }
 
@@ -222,6 +248,12 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     public void delete(Key key) {
+        if (key == null) {
+            throw new IllegalArgumentException("argument to delete() is null");
+        }
+        if (isEmpty()) {
+            return;
+        }
         root = delete(root, key);
     }
 
@@ -251,10 +283,19 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
 
     public Iterable<Key> keys() {
+        if (isEmpty()) {
+            return new Queue<Key>();
+        }
         return keys(min(), max());
     }
 
     public Iterable<Key> keys(Key lo, Key hi) {
+        if (lo == null) {
+            throw new IllegalArgumentException("first argument to keys() is null");
+        }
+        if (hi == null) {
+            throw new IllegalArgumentException("second argument to keys() is null");
+        }
         Queue<Key> queue = new Queue<Key>();
         keys(root, queue, lo, hi);
         return queue;
