@@ -1,7 +1,11 @@
 package chapter3.section3;
 
+import java.util.NoSuchElementException;
+
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Queue;
+
 
 /**
  * A left-leaning red-black BST
@@ -161,7 +165,122 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         h.size = size(h.left) + size(h.right) + 1;
         return h;
     }
-    
+
+    /**
+     * Get the value of the given key.
+     */
+    public Value get(Key key) {
+        if (key == null) {
+            return null;
+        }
+        Node n = get(root, key);
+        return n == null ? null : n.val;
+    }
+
+    /**
+     * Return the node associated with the given key; null if not exists.
+     */
+    private Node get(Node node, Key key) {
+        if (node == null) {
+            return null;
+        }
+        int cmp = key.compareTo(node.key);
+        if (cmp < 0) {
+            return get(node.left, key);
+        } else if (cmp > 0) {
+            return get(node.right, key);
+        } else {
+            return node;
+        }
+    }
+
+    /**
+     * Return the smallest key in the tree 
+     */
+    public Key min() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("call min() with empty symbol table");
+        }
+        return min(root).key;
+    }
+
+    /**
+     * Return the node associated with the smallest key rooted at node
+     */
+    private Node min(Node node) {
+        // assert node != null;
+        if (node.left == null) {
+            return node;
+        }
+        return min(node.left);
+    }
+
+    /**
+     * Return the largest key in the tree
+     */
+    public Key max() {
+        if (isEmpty()) {
+            throw new NoSuchElementException("call max() with empty symbol table");
+        }
+        return max(root).key;
+    }
+
+    /**
+     * Return the node associated with the largest key rooted at node
+     */
+    private Node max(Node node) {
+        // assert node != null
+        if (node.right == null) {
+            return node;
+        }
+        return max(node.right);
+    }
+
+    /**
+     * Returns all keys in the tree in ascending order
+     */
+    public Iterable<Key> keys() {
+        if (isEmpty()) {
+            return new Queue<Key>();
+        }
+        return keys(min(), max());
+    }
+
+    /**
+     * Returns all keys in the tree between lo and hi in ascending order
+     */
+    private Iterable<Key> keys(Key lo, Key hi) {
+        if (lo == null) {
+            throw new IllegalArgumentException("first argument to keys() is null");
+        }
+        if (hi == null) {
+            throw new IllegalArgumentException("second argument to keys() is null");
+        }
+        Queue<Key> queue = new Queue<Key>();
+        keys(root, queue, lo, hi);
+        return queue;
+    }
+
+    /**
+     * Add all keys between lo and hi in the subtree rooted at node.
+     */
+    private void keys(Node node, Queue<Key> queue, Key lo, Key hi) {
+        if (node == null) {
+            return;
+        }
+        int cmpLo = lo.compareTo(node.key);
+        int cmpHi = hi.compareTo(node.key);
+        if (cmpLo < 0) {
+            keys(node.left, queue, lo, hi);
+        }
+        if (cmpLo <= 0 && cmpHi >= 0) {
+            queue.enqueue(node.key);
+        }
+        if (cmpHi > 0) {
+            keys(node.right, queue, lo, hi);
+        }
+    }
+
     public static void main(String[] args) {
         RedBlackBST<String, Integer> st = new RedBlackBST<>();
         for (int i = 0; !StdIn.isEmpty(); i += 1) {
@@ -169,10 +288,10 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
             st.put(key, i);
         }
         StdOut.println();
-        // for (String s : st.keys()) {
-        //     StdOut.println(s + " " + st.get(s));
-        // }
-        // StdOut.println();
+        for (String s : st.keys()) {
+            StdOut.println(s + " " + st.get(s));
+        }
+        StdOut.println();
     }
 }
 
