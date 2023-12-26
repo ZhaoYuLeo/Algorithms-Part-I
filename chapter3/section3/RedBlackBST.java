@@ -23,6 +23,8 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     private static final boolean RED = true;
     private static final boolean BLACK = false;
 
+    private static boolean showAnimate = false;
+
     private Node root;      // root of the BST
 
     private class Node {
@@ -240,10 +242,12 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
      * Repeat the following process to 
      */
     public void show(Key key, int time) {
-        StdDraw.clear();
-        draw(key);
-        StdDraw.show();
-        StdDraw.pause(time);
+        if (showAnimate) {
+            StdDraw.clear();
+            draw(key);
+            StdDraw.show();
+            StdDraw.pause(time);
+        }
     }
 
     /**
