@@ -5,7 +5,9 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.StdDraw;
 
+import util.Constants;
 
 /**
  * A left-leaning red-black BST
@@ -24,11 +26,11 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     private Node root;      // root of the BST
 
     private class Node {
-        private Key key;            // key
-        private Value val;          // associated data
-        private Node left, right;    // links to left and right subtrees
-        private boolean color;      // color of parent link
-        private int size;           // subtree count
+        private Key key;          // key
+        private Value val;        // associated data
+        private Node left, right; // links to left and right subtrees
+        private boolean color;    // color of parent link
+        private int size;         // subtree count
 
         public Node(Key key, Value val, boolean color, int size) {
             this.key = key;
@@ -36,6 +38,78 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
             this.color = color;
             this.size = size;
         }
+    }
+
+    /**
+     * Draw left-leaning red-black BST.
+     */
+    public void draw() {
+        double R = 0.35; // The radius of the node
+
+        StdDraw.setScale(0, size() + 1);
+        StdDraw.setPenRadius(Constants.PEN1);
+        drawLine(root, 0, size());
+        StdDraw.setPenRadius(Constants.PEN0);
+        drawCircle(root, 0, size(), R);
+    }
+
+    private void drawCircle(Node n, int prev, int y, double R) {
+        if (n == null) {
+            return;
+        }
+        
+        int x = size(n.left) + prev + 1;
+        StdDraw.setPenColor(StdDraw.WHITE);
+        StdDraw.filledCircle(x, y, R);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.circle(x, y, R);
+        StdDraw.setFont(Constants.BIG_KEY);
+        StdDraw.text(x, y, n.key.toString());
+        drawCircle(n.left, prev, y - 1, R);
+        drawCircle(n.right, x, y - 1, R);
+    }
+
+    private void setRedLine() {
+        StdDraw.setPenColor(Constants.RED);
+        StdDraw.setPenRadius(3 * Constants.PEN1);
+    }
+
+    private void setBlackLine() {
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius(Constants.PEN1);
+    }
+
+    private void drawLine(Node n, int prev, int y) {
+        if (n == null) {
+            return;
+        }
+        int x = size(n.left) + prev + 1;
+        if (n.left == null) {
+            StdDraw.line(x, y, x - 0.3, y - 0.5);
+        }
+        if (n.right == null) {
+            StdDraw.line(x, y, x + 0.3, y - 0.5);
+        }
+        if (n.left != null) {
+            if (isRed(n.left)) {
+                setRedLine();
+            }
+            int xL = size(n.left.left) + prev + 1;
+            int yL = y - 1;
+            StdDraw.line(x, y, xL, yL);
+        }
+        setBlackLine();
+        if (n.right != null) {
+            if (isRed(n.right)) {
+                setRedLine();
+            }
+            int xR = x + size(n.right.left) + 1;
+            int yR = y - 1;
+            StdDraw.line(x, y, xR, yR);
+        }
+        setBlackLine();
+        drawLine(n.left, prev, y - 1);
+        drawLine(n.right, x, y - 1);
     }
 
     /**
@@ -80,9 +154,11 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
     /**
      * Make a right-leaning link lean to the left
-     * o          o
-     *  \    →   /
-     *   o*     o*
+     *  |          |
+     *  E          S
+     * / \    →   / \
+     *    S      E 
+     *   / \    / \
      */
     private Node rotateLeft(Node h) {
         assert (h != null) && isRed(h.right) && !isRed(h.left);
@@ -98,9 +174,11 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
 
     /**
      * Make a left-leaning link lean to the right
-     *   o       o
-     *  /    →    \
-     * o*          o*
+     *    |       |
+     *    S       E
+     *   / \  →  / \
+     *  E           S
+     * / \         / \
      */
     private Node rotateRight(Node h) {
         assert (h != null) && isRed(h.left) && !isRed(h.right);
@@ -292,6 +370,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
             StdOut.println(s + " " + st.get(s));
         }
         StdOut.println();
+        st.draw();
     }
 }
 
