@@ -43,17 +43,24 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     /**
      * Draw left-leaning red-black BST.
      */
-    public void draw() {
+    public void draw(Key key) {
         double R = 0.35; // The radius of the node
 
-        StdDraw.setScale(0, size() + 1);
+        // keep the tree at the original position after local rotation.
+        StdDraw.setCanvasSize(512, 512);
+        // assert size(root) < 16;
+        StdDraw.setScale(0, 16);
         StdDraw.setPenRadius(Constants.PEN1);
-        drawLine(root, 0, size());
+        drawLine(root, 0, 15);
         StdDraw.setPenRadius(Constants.PEN0);
-        drawCircle(root, 0, size(), R);
+        drawCircle(root, 0, 15, R, key);
     }
 
-    private void drawCircle(Node n, int prev, int y, double R) {
+    /**
+     * Draw all nodes of the tree rooted at the given node n.
+     * And highlight the node associated with key.
+     */
+    private void drawCircle(Node n, int prev, int y, double R, Key key) {
         if (n == null) {
             return;
         }
@@ -64,21 +71,34 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.circle(x, y, R);
         StdDraw.setFont(Constants.BIG_KEY);
+        if (n.key.equals(key)) {
+            StdDraw.setPenColor(Constants.RED);
+        }
         StdDraw.text(x, y, n.key.toString());
-        drawCircle(n.left, prev, y - 1, R);
-        drawCircle(n.right, x, y - 1, R);
+        StdDraw.setPenColor(StdDraw.BLACK);
+        drawCircle(n.left, prev, y - 1, R, key);
+        drawCircle(n.right, x, y - 1, R, key);
     }
 
+    /**
+     * Set the style of the red line.
+     */
     private void setRedLine() {
         StdDraw.setPenColor(Constants.RED);
         StdDraw.setPenRadius(3 * Constants.PEN1);
     }
 
+    /**
+     * Set the style of the black line.
+     */
     private void setBlackLine() {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.setPenRadius(Constants.PEN1);
     }
 
+    /**
+     * Draw all lines connected nodes of the tree rooted at n.
+     */
     private void drawLine(Node n, int prev, int y) {
         if (n == null) {
             return;
@@ -217,6 +237,16 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     }
 
     /**
+     * Repeat the following process to 
+     */
+    public void show(Key key, int time) {
+        StdDraw.clear();
+        draw(key);
+        StdDraw.show();
+        StdDraw.pause(time);
+    }
+
+    /**
      * Insert the key-value pair in the subtree rooted at h
      */
     private Node put(Node h, Key key, Value val) {
@@ -231,13 +261,18 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
         } else {
             h.val = val;
         }
+        int pauseTime = 3000;   // animate
         if (isRed(h.right) && !isRed(h.left)) {
+            // show the process of rotation
+            show(key, pauseTime);
             h = rotateLeft(h);
         }
         if (isRed(h.left) && isRed(h.left.left)) {
+            show(key, pauseTime);
             h = rotateRight(h);
         }
         if (isRed(h.left) && isRed(h.right)) {
+            show(key, pauseTime);
             flipColors(h);
         }
         h.size = size(h.left) + size(h.right) + 1;
@@ -360,17 +395,18 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> {
     }
 
     public static void main(String[] args) {
+        StdDraw.enableDoubleBuffering();
         RedBlackBST<String, Integer> st = new RedBlackBST<>();
         for (int i = 0; !StdIn.isEmpty(); i += 1) {
             String key = StdIn.readString();
             st.put(key, i);
+            st.show(key, 1500);
         }
         StdOut.println();
         for (String s : st.keys()) {
             StdOut.println(s + " " + st.get(s));
         }
         StdOut.println();
-        st.draw();
     }
 }
 
