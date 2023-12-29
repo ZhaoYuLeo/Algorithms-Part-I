@@ -1,6 +1,7 @@
 package chapter3.section3;
 
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Queue;
 
 import chapter3.section1.ST;
@@ -193,7 +194,8 @@ public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
     }
 
     public static void main(String[] args) {
-        String[] a = {"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"};
+        // String[] a = {"S", "E", "A", "R", "C", "H", "E", "X"}; // internalPath 12
+        String[] a = {"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}; // internalPath 45
         Ex_23<String, Integer> RBT = new Ex_23<>();
         for (int i = 0; i < a.length; i += 1) {
             RBT.put(a[i], i);
@@ -204,8 +206,31 @@ public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
         }
         RBT.draw(a[a.length - 1]);
 
+
         // Run experiments to develop a hypothesis estimating the average path 
         // length in a tree built from N random insertions.
+        for (int N = 100; N < 1000000; N *= 10) {
+            int times = 20;
+            int t23AvgPath = 0;
+            int rbtAvgPath = 0;
+            RedBlackBST.setAnimate(false);
+            for (int t = 0; t < times; t += 1) {
+                Ex_23<Integer, Integer> t23 = new Ex_23<>();
+                RedBlackBST<Integer, Integer> rbt = new RedBlackBST<>();
+                for (int i = 0; i < N; i += 1) {
+                    int key = StdRandom.uniform(N);
+                    t23.put(key, i);
+                    rbt.put(key, i);
+                }
+                t23AvgPath += t23.avgPath();
+                rbtAvgPath += rbt.avgPath();
+            }
+            StdOut.println("Average path for size " + N + ": 2-3(no balance) " + t23AvgPath / times + " r-b " + rbtAvgPath / times);
+        }
+        // Average path for size 100: 2-3(no balance) 6 r-b 5
+        // Average path for size 1000: 2-3(no balance) 10 r-b 8
+        // Average path for size 10000: 2-3(no balance) 15 r-b 12
+        // Average path for size 100000: 2-3(no balance) 19 r-b 15
     }
 }
 

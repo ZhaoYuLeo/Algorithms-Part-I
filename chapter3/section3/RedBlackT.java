@@ -29,6 +29,41 @@ public abstract class RedBlackT<Key extends Comparable<Key>, Value> {
 
 
     /**
+     * Return the sum of the depths of all nodes.
+     */
+    public int internalPath() {
+        if (root == null) {
+            return 0;
+        }
+        return internalPath(root, 0, 0);
+    }
+
+    /**
+     * Adding the depths of all nodes.
+     */
+    private int internalPath(Node n, int sum, int path) {
+        if (n == null) {
+            return sum;
+        }
+        return internalPath(n.left, sum + path, path + 1) + internalPath(n.right, 0, path + 1);
+    }
+
+    /**
+     * Return the average path length of the tree.
+     */
+    public double avgPath() {
+        if (root == null) {
+            return 0;
+        }
+        return (internalPath() * 1.0 / size()) + 1;
+    }
+
+    /**
+     * Return the number of nodes in the tree.
+     */
+    public abstract int size();
+
+    /**
      * Return the number of nodes in subtree rooted at n.
      */
     protected abstract int size(Node n);
@@ -119,7 +154,6 @@ public abstract class RedBlackT<Key extends Comparable<Key>, Value> {
         }
         setBlackLine();
         if (n.right != null) {
-            StdOut.println("is red right? " + isRed(n.right));
             if (isRed(n.right)) {
                 setRedLine();
             }
