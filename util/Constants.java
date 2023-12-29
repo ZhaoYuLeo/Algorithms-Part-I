@@ -15,6 +15,7 @@ public class Constants {
     public static final Font TITLE_FONT = new Font("SansSerif", Font.BOLD, 14);
     public static final Font AXISTITLE_FONT = new Font("SansSerif", Font.BOLD, 12);
     public static final Font LABEL_FONT = new Font("SansSerif", Font.PLAIN, 12);
+    public static final Font BIG_KEY = new Font("SansSerif", Font.PLAIN, 20);
 
     public static final Color RED    = new Color(0x9D2933);
     public static final Color BLUE   = new Color(0x003472);
