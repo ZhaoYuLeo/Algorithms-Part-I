@@ -36,30 +36,6 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<K
     }
 
     /**
-     * Return the number of key-value pairs in this symbol tables
-     */
-    public int size() {
-        return size(root);
-    }
-
-    /**
-     * Number of node in subtree rooted at x; 0 of x is null
-     */
-    protected int size(Node x) {
-        if (x == null) {
-            return 0;
-        }
-        return x.size;
-    }
-
-    /**
-     * Is this symbol table empty?
-     */
-    public boolean isEmpty() {
-        return root == null; // or size() == 0;
-    }
-
-    /**
      * Is node x red; false if x is null ?
      */
     protected boolean isRed(Node x) {

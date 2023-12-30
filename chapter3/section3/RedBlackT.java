@@ -59,14 +59,28 @@ public abstract class RedBlackT<Key extends Comparable<Key>, Value> {
     }
 
     /**
-     * Return the number of nodes in the tree.
+     * Number of nodes in the tree.
      */
-    public abstract int size();
+    public int size() {
+        return size(root);
+    }
 
     /**
-     * Return the number of nodes in subtree rooted at n.
+     * Number of nodes in the subtree rooted at n.
      */
-    protected abstract int size(Node n);
+    protected int size(Node n) {
+        if (n == null) {
+            return 0;
+        }
+        return n.size;
+    }
+
+    /**
+     * Return true if the tree is empty, false otherwise.
+     */
+    public boolean isEmpty() {
+        return size() == 0;
+    }
 
     /**
      * Return true if the current node is red, false otherwise.

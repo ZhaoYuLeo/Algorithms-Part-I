@@ -4,19 +4,27 @@ import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.Queue;
 
-import chapter3.section1.ST;
 /**
- * 2-3 trees without balance restriction. Develop an implementation of the basic
- * symbol-table API that uses 2-3 trees that are not necessarily balanced as the
- * underlying data structure. Allow 3-nodes to lean either way. Hook the new node
- * onto the bottom with a black link when inserting into a 3-node at the bottom.
- * Run experiments to develop a hypothesis estimating the average path length in 
- * a tree built from N random insertions.
+ * Top-down 2-3-4 trees. Develop an implementation of the basic symbol-table API
+ * that uses balanced 2-3-4 trees as the underlying data structure, using the 
+ * red-black representation and the insertion method described in the text, where
+ * 4-nodes are split by flipping colors on the way down the search path and balancing
+ * on the way up.
  */
-public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
+public class Ex_25<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
 
     private static final boolean RED = true;
     private static final boolean BLACK = false;
+
+    /**
+     * Return true if the current node is red, false otherwise.
+     */
+    protected boolean isRed(Node n) {
+        if (n == null) {
+            return false;
+        }
+        return n.color == RED;
+    }
 
     /** 
      * put key-value pair into the table
@@ -34,6 +42,12 @@ public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
         if (n == null) {
             return new Node(key, val, RED, 1);
         }
+        // split 4-nodes into two 2-nodes to make sure that the current node is not
+        // a 4 node so we are assured that there will be room to insert the new key
+        // at the bottom
+        if (!isRed(n) && isRed(n.left) && isRed(n.right)) {
+            flipColors(n);
+        }
         int cmp = key.compareTo(n.key);
         if (cmp < 0) {
             n.left = put(n.left, key, val);
@@ -42,24 +56,72 @@ public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
         } else {
             n.val = val;
         }
-        if (isRed(n) && isRed(n.left)) {
-            n.left.color = BLACK;
+        // fix-up any right-leaning links doing transformations on the way up the 
+        // path to balance any 4-nodes that may have been created.
+        if (isRed(n.right) && !isRed(n.left)) {
+            n = rotateLeft(n);
         }
-        if (isRed(n) && isRed(n.right)) {
-            n.right.color = BLACK;
+        if (isRed(n.left) && isRed(n.left.left)) {
+            n = rotateRight(n);
         }
         n.size = size(n.left) + size(n.right) + 1;
         return n;
     }
 
     /**
-     * Return true if the current node is red, false otherwise.
+     * Make a right-leaning link lean to the left.
+     *  |           |
+     *  E           S
+     * / \      →  / \
+     *    S*      E*
+     *   / \     / \
      */
-    protected boolean isRed(Node n) {
-        if (n == null) {
-            return false;
-        }
-        return n.color == RED;
+    private Node rotateLeft(Node h) {
+        assert (h != null) && !isRed(h.left) && isRed(h.right);
+        Node x = h.right;
+        h.right = x.left;
+        x.left = h;
+        x.color = h.color;
+        h.color = RED;
+        x.size = h.size;
+        h.size = size(h.left) + size(h.right) + 1;
+        return x;
+    }
+
+    /**
+     * Make a left-leaning link lean to the right.
+     *    |         |
+     *    S         E
+     *   / \    →  / \
+     *  E*            S*
+     * / \           / \
+     */
+    private Node rotateRight(Node h) {
+        assert (h != null) && isRed(h.left) && !isRed(h.right);
+        Node x = h.left;
+        h.left = x.right;
+        x.right = h;
+        x.color = h.color;
+        h.color = RED;
+        x.size = h.size;
+        h.size = size(h.left) + size(h.right) + 1;
+        return x;
+    }
+
+    /**
+     * Flip the colors of a node and its two children.
+     *    |            |
+     *    o            o*
+     *   / \          / \
+     *  o*  o*   →   o   o
+     * / \ / \      / \ / \
+     */
+    private void flipColors(Node h) {
+        assert (h != null) && (h.left != null) && (h.right != null);
+        assert !isRed(h) && isRed(h.left) && isRed(h.right);
+        h.color = !h.color;
+        h.left.color =!h.left.color;
+        h.right.color = !h.right.color;
     }
 
     /** 
@@ -172,41 +234,16 @@ public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
     public static void main(String[] args) {
         // String[] a = {"S", "E", "A", "R", "C", "H", "E", "X"}; // internalPath 12
         String[] a = {"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}; // internalPath 45
-        Ex_23<String, Integer> RBT = new Ex_23<>();
+        Ex_25<String, Integer> t234 = new Ex_25<>();
         for (int i = 0; i < a.length; i += 1) {
-            RBT.put(a[i], i);
+            t234.put(a[i], i);
         }
 
-        for (String s : RBT.keys()) {
-            StdOut.println(s + " " + RBT.get(s));
+        for (String s : t234.keys()) {
+            StdOut.println(s + " " + t234.get(s));
         }
-        RBT.draw(a[a.length - 1]);
+        t234.draw(a[a.length - 1]);
 
-
-        // Run experiments to develop a hypothesis estimating the average path 
-        // length in a tree built from N random insertions.
-        for (int N = 100; N < 1000000; N *= 10) {
-            int times = 20;
-            int t23AvgPath = 0;
-            int rbtAvgPath = 0;
-            RedBlackBST.setAnimate(false);
-            for (int t = 0; t < times; t += 1) {
-                Ex_23<Integer, Integer> t23 = new Ex_23<>();
-                RedBlackBST<Integer, Integer> rbt = new RedBlackBST<>();
-                for (int i = 0; i < N; i += 1) {
-                    int key = StdRandom.uniform(N);
-                    t23.put(key, i);
-                    rbt.put(key, i);
-                }
-                t23AvgPath += t23.avgPath();
-                rbtAvgPath += rbt.avgPath();
-            }
-            StdOut.println("Average path for size " + N + ": 2-3(no balance) " + t23AvgPath / times + " r-b " + rbtAvgPath / times);
-        }
-        // Average path for size 100: 2-3(no balance) 6 r-b 5
-        // Average path for size 1000: 2-3(no balance) 10 r-b 8
-        // Average path for size 10000: 2-3(no balance) 15 r-b 12
-        // Average path for size 100000: 2-3(no balance) 19 r-b 15
     }
 }
 
