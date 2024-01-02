@@ -10,6 +10,9 @@ import util.Constants;
  */
 public abstract class RedBlackT<Key extends Comparable<Key>, Value> {
 
+    protected static final boolean RED = true;
+    protected static final boolean BLACK = false;
+
     protected Node root;
 
     protected class Node {

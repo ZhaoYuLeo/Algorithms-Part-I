@@ -15,9 +15,6 @@ import chapter3.section1.ST;
  */
 public class Ex_23<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
 
-    private static final boolean RED = true;
-    private static final boolean BLACK = false;
-
     /** 
      * put key-value pair into the table
      * (remove key from table if value is null)

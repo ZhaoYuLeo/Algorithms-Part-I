@@ -13,9 +13,6 @@ import edu.princeton.cs.algs4.Queue;
  */
 public class Ex_25<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
 
-    private static final boolean RED = true;
-    private static final boolean BLACK = false;
-
     /**
      * Return true if the current node is red, false otherwise.
      */
@@ -232,8 +229,8 @@ public class Ex_25<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Va
     }
 
     public static void main(String[] args) {
-        // String[] a = {"S", "E", "A", "R", "C", "H", "E", "X"}; // internalPath 12
-        String[] a = {"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}; // internalPath 45
+        String[] a = {"S", "E", "A", "R", "C", "H", "E", "X"}; // internalPath 12
+        //String[] a = {"A", "C", "E", "H", "L", "M", "P", "R", "S", "X"}; // internalPath 45
         Ex_25<String, Integer> t234 = new Ex_25<>();
         for (int i = 0; i < a.length; i += 1) {
             t234.put(a[i], i);

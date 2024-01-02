@@ -12,9 +12,6 @@ import edu.princeton.cs.algs4.Queue;
  */
 public class Ex_26_SingleTopDownPass<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
 
-    private static final boolean RED = true;
-    private static final boolean BLACK = false;
-
     /** 
      * put key-value pair into the table
      * (remove key from table if value is null)

@@ -20,9 +20,6 @@ import util.Constants;
  */
 public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<Key, Value> {
 
-    private static final boolean RED = true;
-    private static final boolean BLACK = false;
-
     private static boolean showAnimate = true;
 
     /**
@@ -53,7 +50,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<K
      *    S      E 
      *   / \    / \
      */
-    private Node rotateLeft(Node h) {
+    protected Node rotateLeft(Node h) {
         assert (h != null) && isRed(h.right) && !isRed(h.left);
         Node x = h.right;
         h.right = x.left;
@@ -73,7 +70,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<K
      *  E           S
      * / \         / \
      */
-    private Node rotateRight(Node h) {
+    protected Node rotateRight(Node h) {
         assert (h != null) && isRed(h.left) && !isRed(h.right);
         Node x = h.left;
         h.left = x.right;
@@ -93,7 +90,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<K
      *  o*  o*   →     o   o
      * / \ / \        / \ / \
      */
-    private void flipColors(Node h) {
+    protected void flipColors(Node h) {
         assert (h != null) && (h.left != null) && (h.right != null);
         assert (!isRed(h)) && isRed(h.left) && isRed(h.right);
         h.color = !h.color;
@@ -124,7 +121,7 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> extends RedBlackT<K
     /**
      * Insert the key-value pair in the subtree rooted at h
      */
-    private Node put(Node h, Key key, Value val) {
+    protected Node put(Node h, Key key, Value val) {
         if (h == null) {
             return new Node(key, val, RED, 1);
         }
